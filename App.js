@@ -11,27 +11,27 @@ const server = http.createServer((req, res) => {
   if(url=== "/") {
     res.write('<html>');
     res.write('<head><title>Enter Message</title></head>');
+    res.write('<body>');
     fs.readFile('message.txt', 'utf8', (err, data) => {
       if (!err) {
         const messages = data.split('\n').filter((message) => message.trim() !== '');
+        res.write('<h1>Messages</h1>');
         res.write('<ul>');
-        messages.forEach((message) => {
-          res.write(`<li>${message}</li>`);
-          console.log(message);
-        });
+        res.write(`<li>${messages[0].toString()}</li>`);
         res.write('</ul>');
+        
       }
+      res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
+      res.write('</html>');
+      return res.end();
     });
-    res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
-    res.write('</html>');
-    return res.end();
+    
 
   }
-  if(url=== "/message" && method==="POST") {
+  else if(url=== "/message" && method==="POST") {
     const body=[];
     req.on("data",(chunk) => {
       body.push(chunk);
-      console.log(chunk);
     });
     return req.on("end",() => {
       const parsedBody=Buffer.concat(body).toString();
@@ -42,7 +42,8 @@ const server = http.createServer((req, res) => {
         return res.end();
       });
     });
-  } else if (url === '/home') {
+  }
+  else if (url === '/home') {
     res.statusCode = 200;
     res.write('<html>');
     res.write('<head><title>Home Page</title></head>');
@@ -66,8 +67,7 @@ const server = http.createServer((req, res) => {
     res.write('<head><title>Page Not Found</title></head>');
     res.write('<body>404 Page Not Found</body>');
     res.write('</html>');
-  }
-  res.end();
+  } 
 });
 
 server.listen(4000);
