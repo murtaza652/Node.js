@@ -1,18 +1,20 @@
-const http = require('http');
-
 const express = require('express');
-
+const bodyParser = require('body-parser');
 const app = express();
 
-app.use((req, res, next) => {
-    console.log("Hi there");
-    next();
-});
-app.use((req, res, next) => {
-    console.log("Hi there again");
-    res.send('<h1>Welcome</h1>');
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/add-product",(req, res, next) => {
+    res.send("<form action='/product' method='POST'><input type='text' name='tittle'><input type='number' name='size'><button type='submit'>Add Product </button></form>");
 });
 
-const server = http.createServer(app);
+app.post("/product",(req, res, next) => {
+   console.log(req.body);
+   res.redirect('/');
+});
 
-server.listen(4000); 
+app.use("/",(req, res, next) => {
+    res.send('<h1>Welcome to Express!</h1>');
+});
+
+app.listen(4000);  
