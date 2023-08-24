@@ -1,12 +1,12 @@
-const path=require('path');
-const express=require('express');
+const path = require('path');
 
-const router= express.Router();
+const express = require('express');
 
-const rootDir=require('../util/path');
+const productsController=require('../controllers/products');
+const bodyParser = require('body-parser');
 
-router.get("/",(req, res, next) => {
-    res.sendFile(path.join(rootDir,"views","shop.html"));
-});
+const router = express.Router();
 
-module.exports =router;
+router.get('/', productsController.getProducts );
+
+module.exports = router;
